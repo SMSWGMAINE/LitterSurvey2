@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        #map {
+            width: 2287px;
+            height: 1498px;
+        }
+        </style>
+        <title>SMSWG Litter Survey</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/Townships_1.js"></script>
+        <script src="data/Litter_2.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[42.7303784229473,-70.85188967201083],[43.20102046708296,-69.8695110443792]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'feet',
+            secondaryLengthUnit: 'miles',
+            primaryAreaUnit: 'sqfeet',
+            secondaryAreaUnit: 'sqmiles'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleMap_0');
+        map.getPane('pane_GoogleMap_0').style.zIndex = 400;
+        var layer_GoogleMap_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleMap_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 18
+        });
+        layer_GoogleMap_0;
+        map.addLayer(layer_GoogleMap_0);
+        function pop_Townships_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">TOWN</th>\
+                        <td>' + (feature.properties['TOWN'] !== null ? autolinker.link(feature.properties['TOWN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Townships_1_0() {
+            return {
+                pane: 'pane_Townships_1',
+                opacity: 1,
+                color: 'rgba(228,26,28,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 4.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Townships_1');
+        map.getPane('pane_Townships_1').style.zIndex = 401;
+        map.getPane('pane_Townships_1').style['mix-blend-mode'] = 'normal';
+        var layer_Townships_1 = new L.geoJson(json_Townships_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Townships_1',
+            layerName: 'layer_Townships_1',
+            pane: 'pane_Townships_1',
+            onEachFeature: pop_Townships_1,
+            style: style_Townships_1_0,
+        });
+        bounds_group.addLayer(layer_Townships_1);
+        map.addLayer(layer_Townships_1);
+        function pop_Litter_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Quantity</th>\
+                        <td>' + (feature.properties['Quantity'] !== null ? autolinker.link(feature.properties['Quantity'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Type</th>\
+                        <td>' + (feature.properties['Type'] !== null ? autolinker.link(feature.properties['Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Comment</th>\
+                        <td>' + (feature.properties['Comment'] !== null ? autolinker.link(feature.properties['Comment'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Date</th>\
+                        <td>' + (feature.properties['Date'] !== null ? autolinker.link(feature.properties['Date'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Litter_2_0(feature) {
+            switch(String(feature.properties['Type'])) {
+                case 'AluminumCan':
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(225,136,213,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'CigButt':
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(60,161,216,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Electronic':
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(25,86,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Fabric':
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(209,95,69,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Foam':
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(140,236,236,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Food':
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(236,182,121,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Glass':
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(78,69,214,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'GlassBottle':
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(40,219,31,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Metal':
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(79,221,122,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Other':
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(166,225,124,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Paper':
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(238,53,84,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'PetWasteInBag':
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(17,237,160,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'PetWasteNoBag':
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(221,57,142,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Plastic':
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(198,230,93,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'PlasticBottle':
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(207,192,75,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'PlasticWrap':
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(178,80,208,1.0)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_Litter_2',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(99,14,219,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Litter_2');
+        map.getPane('pane_Litter_2').style.zIndex = 402;
+        map.getPane('pane_Litter_2').style['mix-blend-mode'] = 'normal';
+        var layer_Litter_2 = new L.geoJson(json_Litter_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Litter_2',
+            layerName: 'layer_Litter_2',
+            pane: 'pane_Litter_2',
+            onEachFeature: pop_Litter_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Litter_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Litter_2);
+        map.addLayer(layer_Litter_2);
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>SMSWG Litter Survey</h2>';
+            };
+            title.addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
